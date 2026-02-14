@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: applications
+  namespace: argocd
+spec:
+  description: Application services
+  sourceRepos:
+    - https://github.com/kse-bd8338bbe006/kse-labs-deployment.git
+  destinations:
+    - namespace: simple-go-service-a
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: apps
+      kind: Deployment
+    - group: ''
+      kind: Service
+    - group: networking.k8s.io
+      kind: Ingress
+    - group: ''
+      kind: Secret
+    - group: ''
+      kind: ConfigMap
+    - group: ''
+      kind: ServiceAccount
+    - group: external-secrets.io
+      kind: ExternalSecret

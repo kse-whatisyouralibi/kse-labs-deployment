@@ -4,7 +4,7 @@ metadata:
   name: bootstrap
   namespace: argocd
 spec:
-  project: default
+  project: bootstrap
   source:
     repoURL: https://github.com/kse-bd8338bbe006/kse-labs-deployment.git
     targetRevision: main
