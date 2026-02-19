@@ -39,7 +39,7 @@ simple-go-service-a release workflow
 
 ### Step 1: Create org-level secret for cross-repo access
 
-- [ ] Create a **fine-grained PAT** scoped to `kse-WhatIsYourAlibi/kse-labs-deployment`
+- [ ] Create a **fine-grained PAT** scoped to `kse-whatisyouralibi/kse-labs-deployment`
   - Permission: `Contents: Read and write`
 - [ ] Store as org-level secret: `DEPLOYMENT_REPO_TOKEN`
 - [ ] Make it available to `simple-go-service-a` (and future service repos)
@@ -48,9 +48,9 @@ simple-go-service-a release workflow
 
 - [ ] Create `kse-labs-trusted-workflows/.github/workflows/update-deployment-manifest.yaml`
 - [ ] Inputs:
-  - `deployment-repo` (default: `kse-WhatIsYourAlibi/kse-labs-deployment`)
+  - `deployment-repo` (default: `kse-whatisyouralibi/kse-labs-deployment`)
   - `service-name` (required -- used for commit messages AND to derive the deployment path)
-  - `image-name` (e.g., `ghcr.io/kse-WhatIsYourAlibi/simple-go-service-a`)
+  - `image-name` (e.g., `ghcr.io/kse-whatisyouralibi/simple-go-service-a`)
   - `new-tag` (e.g., `v0.0.14`)
 - [ ] Naming convention: deployment path is derived as `services/<service-name>/deployment.yaml` -- no explicit path input needed
 - [ ] Secret: `deployment-repo-token`
@@ -72,11 +72,11 @@ simple-go-service-a release workflow
   ```yaml
   update-deployment:
     needs: [increment-version, build-and-release]
-    uses: kse-WhatIsYourAlibi/kse-labs-trusted-workflows/.github/workflows/update-deployment-manifest.yaml@main
+    uses: kse-whatisyouralibi/kse-labs-trusted-workflows/.github/workflows/update-deployment-manifest.yaml@main
     secrets:
       deployment-repo-token: ${{ secrets.DEPLOYMENT_REPO_TOKEN }}
     with:
-      image-name: ghcr.io/kse-WhatIsYourAlibi/simple-go-service-a
+      image-name: ghcr.io/kse-whatisyouralibi/simple-go-service-a
       new-tag: ${{ needs.increment-version.outputs.new_tag }}
       service-name: simple-go-service-a
   ```
@@ -108,11 +108,11 @@ The reusable workflow takes `service-name` and `image-name` as inputs. The deplo
 ```yaml
 # service-a calls with:
 service-name: simple-go-service-a        # -> services/simple-go-service-a/deployment.yaml
-image-name: ghcr.io/kse-WhatIsYourAlibi/simple-go-service-a
+image-name: ghcr.io/kse-whatisyouralibi/simple-go-service-a
 
 # service-b would call with:
 service-name: simple-go-service-b        # -> services/simple-go-service-b/deployment.yaml
-image-name: ghcr.io/kse-WhatIsYourAlibi/simple-go-service-b
+image-name: ghcr.io/kse-whatisyouralibi/simple-go-service-b
 ```
 
 **Convention:** The deployment directory in `kse-labs-deployment/services/` must match the service repo name. No explicit path input needed.

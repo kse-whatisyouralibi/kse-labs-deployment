@@ -6,7 +6,7 @@ metadata:
 spec:
   project: bootstrap
   source:
-    repoURL: https://github.com/kse-WhatIsYourAlibi/kse-labs-deployment.git
+    repoURL: https://github.com/kse-whatisyouralibi/kse-labs-deployment.git
     targetRevision: main
     path: argocd/
     directory:
