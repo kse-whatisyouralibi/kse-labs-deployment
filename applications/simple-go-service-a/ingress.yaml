@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: simple-go-service-a
   namespace: applications
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /health
 spec:
   ingressClassName: nginx
   rules:
