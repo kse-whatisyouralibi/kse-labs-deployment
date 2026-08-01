@@ -25,7 +25,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: spa-token-demo
-          image: ghcr.io/kse-whatisyouralibi/spa-token-demo:3c0bde65db3d84cf93cef35d61ab8be478112c18
+          image: ghcr.io/kse-whatisyouralibi/spa-token-demo:f2ed2afadcdc61309eb5f4189e7a84475dcceefa
           ports:
             - name: http
               containerPort: 8080
