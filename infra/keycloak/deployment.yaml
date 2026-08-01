@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak
+    owner: platform-team
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: keycloak
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: keycloak
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: keycloak
+          image: quay.io/keycloak/keycloak:26.6.3
+          args:
+            - start
+            - --import-realm
+            - --db=postgres
+            - --db-url-host=$(DB_HOST)
+            - --db-url-port=$(DB_PORT)
+            - --db-url-database=$(DB_NAME)
+            - --db-username=$(DB_USER)
+            - --db-password=$(DB_PASSWORD)
+            - --hostname=https://keycloak.192.168.50.10.nip.io
+            - --proxy-headers=xforwarded
+            - --http-enabled=true
+            - --health-enabled=true
+            - --spi-x509cert-lookup-provider=nginx
+            - --spi-x509cert-lookup-nginx-ssl-client-cert=ssl-client-cert
+            # Trust the lab's own Root CA on outbound TLS (SAML metadata import,
+            # OIDC brokering, SMTP). ca.crt is this cluster's root, injected below.
+            - --truststore-paths=/opt/keycloak/conf/truststores
+          env:
+            - name: DB_HOST
+              value: "192.168.50.10"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: "keycloak"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-db-credentials
+                  key: db-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-db-credentials
+                  key: db-password
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              value: "admin"
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              value: "admin"
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: management
+              containerPort: 9000
+              protocol: TCP
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: realm-import
+              mountPath: /opt/keycloak/data/import
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+            - name: lab-truststore
+              mountPath: /opt/keycloak/conf/truststores
+              readOnly: true
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 1Gi
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: management
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: management
+            initialDelaySeconds: 60
+            periodSeconds: 15
+      volumes:
+        - name: realm-import
+          configMap:
+            name: keycloak-realm-import
+        - name: tmp
+          emptyDir:
+            medium: Memory
+            sizeLimit: 128Mi
+        # Root CA that cert-manager publishes into keycloak-tls (ca.crt). Each
+        # student's cluster injects its OWN root here - nothing is hardcoded.
+        # Only the ca.crt key is mounted, so the leaf private key stays out.
+        - name: lab-truststore
+          secret:
+            secretName: keycloak-tls
+            items:
+              - key: ca.crt
+                path: lab-root-ca.pem
