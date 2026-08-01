@@ -186,3 +186,146 @@ data:
         }
       ]
     }
+
+  whatisyouralibi-lab-realm.json: |
+    {
+      "realm": "whatisyouralibi-lab",
+      "enabled": true,
+      "sslRequired": "external",
+      "registrationAllowed": false,
+      "loginWithEmailAllowed": true,
+      "displayName": "whatisyouralibi-lab",
+      "accessTokenLifespan": 300,
+      "ssoSessionIdleTimeout": 1800,
+      "clientScopes": [
+        {
+          "name": "notes:read",
+          "description": "Read notes",
+          "protocol": "openid-connect",
+          "attributes": {
+            "include.in.token.scope": "true",
+            "display.on.consent.screen": "true",
+            "consent.screen.text": "Read your notes"
+          }
+        },
+        {
+          "name": "notes:write",
+          "description": "Create notes",
+          "protocol": "openid-connect",
+          "attributes": {
+            "include.in.token.scope": "true",
+            "display.on.consent.screen": "true",
+            "consent.screen.text": "Create notes"
+          }
+        },
+        {
+          "name": "notes:delete",
+          "description": "Delete notes",
+          "protocol": "openid-connect",
+          "attributes": {
+            "include.in.token.scope": "true",
+            "display.on.consent.screen": "true",
+            "consent.screen.text": "Delete notes"
+          }
+        }
+      ],
+      "clients": [
+        {
+          "clientId": "notes-spa",
+          "name": "Notes SPA (public client)",
+          "enabled": true,
+          "protocol": "openid-connect",
+          "publicClient": true,
+          "standardFlowEnabled": true,
+          "implicitFlowEnabled": false,
+          "directAccessGrantsEnabled": true,
+          "serviceAccountsEnabled": false,
+          "frontchannelLogout": true,
+          "rootUrl": "https://spa-token-demo.192.168.50.10.nip.io",
+          "redirectUris": [
+            "https://spa-token-demo.192.168.50.10.nip.io/*",
+            "http://localhost:3000/*"
+          ],
+          "webOrigins": [
+            "https://spa-token-demo.192.168.50.10.nip.io",
+            "http://localhost:3000"
+          ],
+          "attributes": {
+            "post.logout.redirect.uris": "https://spa-token-demo.192.168.50.10.nip.io/*",
+            "pkce.code.challenge.method": "S256"
+          },
+          "protocolMappers": [
+            {
+              "name": "notes-api-audience",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-audience-mapper",
+              "consentRequired": false,
+              "config": {
+                "included.client.audience": "notes-api",
+                "id.token.claim": "false",
+                "access.token.claim": "true",
+                "introspection.token.claim": "true",
+                "lightweight.claim": "false"
+              }
+            }
+          ],
+          "defaultClientScopes": [
+            "web-origins",
+            "acr",
+            "profile",
+            "roles",
+            "basic",
+            "email"
+          ],
+          "optionalClientScopes": [
+            "notes:read",
+            "notes:write",
+            "notes:delete",
+            "offline_access",
+            "address",
+            "phone",
+            "microprofile-jwt"
+          ]
+        },
+        {
+          "clientId": "notes-api",
+          "name": "Notes API (resource server)",
+          "enabled": true,
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "secret": "notes-api-lab-secret",
+          "standardFlowEnabled": false,
+          "implicitFlowEnabled": false,
+          "directAccessGrantsEnabled": false,
+          "serviceAccountsEnabled": false,
+          "redirectUris": [],
+          "webOrigins": [],
+          "defaultClientScopes": [
+            "web-origins",
+            "acr",
+            "profile",
+            "roles",
+            "basic",
+            "email"
+          ],
+          "optionalClientScopes": []
+        }
+      ],
+      "users": [
+        {
+          "username": "lab-user",
+          "enabled": true,
+          "emailVerified": true,
+          "email": "lab-user@example.com",
+          "firstName": "Lab",
+          "lastName": "User",
+          "credentials": [
+            {
+              "type": "password",
+              "value": "lab-user",
+              "temporary": false
+            }
+          ]
+        }
+      ]
+    }
