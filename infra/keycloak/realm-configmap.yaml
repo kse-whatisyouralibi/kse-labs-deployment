@@ -197,38 +197,6 @@ data:
       "displayName": "whatisyouralibi-lab",
       "accessTokenLifespan": 300,
       "ssoSessionIdleTimeout": 1800,
-      "clientScopes": [
-        {
-          "name": "notes:read",
-          "description": "Read notes",
-          "protocol": "openid-connect",
-          "attributes": {
-            "include.in.token.scope": "true",
-            "display.on.consent.screen": "true",
-            "consent.screen.text": "Read your notes"
-          }
-        },
-        {
-          "name": "notes:write",
-          "description": "Create notes",
-          "protocol": "openid-connect",
-          "attributes": {
-            "include.in.token.scope": "true",
-            "display.on.consent.screen": "true",
-            "consent.screen.text": "Create notes"
-          }
-        },
-        {
-          "name": "notes:delete",
-          "description": "Delete notes",
-          "protocol": "openid-connect",
-          "attributes": {
-            "include.in.token.scope": "true",
-            "display.on.consent.screen": "true",
-            "consent.screen.text": "Delete notes"
-          }
-        }
-      ],
       "clients": [
         {
           "clientId": "notes-spa",
@@ -268,23 +236,6 @@ data:
                 "lightweight.claim": "false"
               }
             }
-          ],
-          "defaultClientScopes": [
-            "web-origins",
-            "acr",
-            "profile",
-            "roles",
-            "basic",
-            "email"
-          ],
-          "optionalClientScopes": [
-            "notes:read",
-            "notes:write",
-            "notes:delete",
-            "offline_access",
-            "address",
-            "phone",
-            "microprofile-jwt"
           ]
         },
         {
@@ -299,16 +250,7 @@ data:
           "directAccessGrantsEnabled": false,
           "serviceAccountsEnabled": false,
           "redirectUris": [],
-          "webOrigins": [],
-          "defaultClientScopes": [
-            "web-origins",
-            "acr",
-            "profile",
-            "roles",
-            "basic",
-            "email"
-          ],
-          "optionalClientScopes": []
+          "webOrigins": []
         }
       ],
       "users": [
